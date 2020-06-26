@@ -7,9 +7,15 @@ class App extends React.Component {
     super(props);
     this.state = {
       post: [],
-     
+      
     }
     
+  }
+
+  componentDidMount(){
+    fetch('http://localhost:8000/Post')
+    .then(res => res.json())
+    .then(res => this.setState({post: res}))
   }
   
   handleClickAllPosts=(event)=>{
@@ -35,7 +41,25 @@ class App extends React.Component {
     .then(res => res.json())
     .then(res => this.setState({post: res}))
   }
+  // Kano Marvel assisted with debugging my handup
+  handleUpVote = (id) => {
+    let responseBody ={
+      method: "POST",
+    }
+    fetch(`http://localhost:8000/Post/${id}/upvotes/`, responseBody)
+    this.handleClickAllPosts()
+  }
+
+  handleDownVote = (id) => {
+    let responseBody ={
+      method: "POST",
+    }
+    fetch(`http://localhost:8000/Post/${id}/downvotes/`, responseBody)
+    this.handleClickAllPosts()
+  }
+
   
+
   render() {
     
     return (
@@ -54,10 +78,13 @@ class App extends React.Component {
               Post: {p.post_title}<br/>
               Date: {p.date}<br/>
               Body: {p.body}<br/>
-          <button>UpVote {p.upvotes}</button>
-          <button>DownVote {p.downvotes}</button>
+          <button onClick={()=>this.handleUpVote(p.id)}>UpVote {p.upvotes}</button>
+          <button onClick={()=>this.handleDownVote(p.id)}>DownVote {p.downvotes}</button>
+          <br/>
 
               </li>
+            
+             
             </ul>
           )
         }
